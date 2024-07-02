@@ -1,0 +1,227 @@
+{
+	"info": {
+		"_postman_id": "b2d700b2-4913-43e3-871a-0f05666af83b",
+		"name": "Userdata",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36647575"
+	},
+	"item": [
+		{
+			"name": "post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed ReferenceError by using pm.response.json() instead of undefined variable response",
+							"pm.test(\"Status code is 200\",  () =>{",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Status name\",  () =>{",
+							"    pm.response.to.have.status(\"Created\");",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.test(\"json data verify\",  () =>{",
+							"    pm.expect(jsonData.name).to.eql(pm.collectionVariables.get(\"name\"));",
+							"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email\"));",
+							"",
+							"});",
+							"    ",
+							"",
+							"pm.collectionVariables.set('pru',\"https://gorest.co.in/public/v2/users\")",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"id\",jsonData.id);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var random = Math.random().toString(36).substring(2);",
+							"",
+							"",
+							"var username  = \"jim\"+random",
+							"var useremail = \"jim\"+random+\"@ce.com\"",
+							"",
+							"pm.collectionVariables.set(\"name\",username);",
+							"pm.collectionVariables.set(\"email\",useremail);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"{{name}}\",\n    \"gender\":\"male\",\n    \"email\":\"{{email}}\", \n    \"status\":\"active\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get after post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.test(\"id validation\",  () =>{",
+							"   pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"id\"))",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "724fce8ac37f7298fa7c3f2a6c2e07202e6d8bf5553beaedd7b3a0d10f02cf14",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pru}}/{{id}}",
+					"host": [
+						"{{pru}}"
+					],
+					"path": [
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\",  () =>{",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"",
+							"pm.collectionVariables.unset(\"id\")",
+							"pm.collectionVariables.unset(\"pru\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{pru}}/{{id}}",
+					"host": [
+						"{{pru}}"
+					],
+					"path": [
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "724fce8ac37f7298fa7c3f2a6c2e07202e6d8bf5553beaedd7b3a0d10f02cf14",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "name",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		}
+	]
+}
